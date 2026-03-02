@@ -7,14 +7,16 @@
 
 .mvc-pill {
     position: absolute;
-    top: 18px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 14px;
+    right: 14px;
+    left: auto;
+    transform: none;
     padding: 10px 14px;
     border-radius: 12px;
     background: rgba(0,0,0,0.70);
     font-size: 18px;
     letter-spacing: 0.2px;
+    pointer-events: none;
 }
 
 .mvc-pill--listening_cmd {
