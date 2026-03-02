@@ -8,6 +8,6 @@
   },
   "overrides": {
     "ffi-napi": "^4.0.4",
-    "get-uv-event-loop-napi-h": "^1.0.6"
+    "get-uv-event-loop-napi-h": "^1.0.5"
   }
 }
