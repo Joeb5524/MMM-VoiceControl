@@ -1,0 +1,9 @@
+{
+  "name": "mmm-voicecontrol",
+  "version": "1.0.0",
+  "description": "Offline voice control with wake word for MagicMirror",
+  "main": "node_helper.js",
+  "dependencies": {
+    "vosk": "^0.3.39"
+  }
+}
