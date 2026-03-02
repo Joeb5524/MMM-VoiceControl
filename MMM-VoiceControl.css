@@ -1,0 +1,22 @@
+.mvc-root {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.mvc-pill {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(0,0,0,0.70);
+    font-size: 18px;
+    letter-spacing: 0.2px;
+}
+
+.mvc-pill--listening_cmd {
+    background: rgba(0,0,0,0.82);
+}
