@@ -27,6 +27,7 @@ module.exports = NodeHelper.create({
     socketNotificationReceived(notification, payload) {
         if (notification === "MVC_START") {
             this.cfg = { ...this.cfg, ...(payload || {}) };
+            console.log("[MMM-VoiceControl] MVC_START commands:", this.cfg.commands);
             this._start();
             return;
         }
