@@ -4,6 +4,11 @@
   "description": "Offline voice control with wake word for MagicMirror",
   "main": "node_helper.js",
   "dependencies": {
-    "vosk": "^0.3.39"
+    "vosk": "0.3.39"
+  },
+  "overrides": {
+    "ffi-napi": "npm:@jellybrick/ffi-napi@4.0.18",
+    "ref-napi": "npm:@jellybrick/ref-napi@4.0.10",
+    "get-uv-event-loop-napi-h": "npm:@jellybrick/get-uv-event-loop-napi-h@1.0.7"
   }
 }
