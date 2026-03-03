@@ -114,6 +114,7 @@ module.exports = NodeHelper.create({
         if (text === "care screen") return { type: "SET_SCREEN", payload: { screen: "care" } };
         if (text === "acknowledge alert") return { type: "ACK_ALERT", payload: {} };
         if (text === "dismiss alert") return { type: "DISMISS_ALERT", payload: {} };
+        if (text === "medication taken") return { type: "MED_TAKEN", payload: {} };
         return null;
     }
 });
