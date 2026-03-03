@@ -70,7 +70,7 @@ Module.register("MMM-VoiceControl", {
 
             if (intent === "ACK_ALERT") this.sendNotification("SR_ACK_ACTIVE_REQUEST", {});
             if (intent === "DISMISS_ALERT") this.sendNotification("SR_DISMISS_ACTIVE_REQUEST", {});
-            if (intent === "MED_TAKEN") this.sendNotification("MED_VOICE_TAKEN", {});
+            if (intent === "MED_TAKEN") this.sendNotification("MED_MARK_NEXT_DUE_TAKEN", {});
 
             setTimeout(() => {
                 this.state = this.listening ? "listening_wake" : "idle";
