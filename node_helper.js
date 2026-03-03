@@ -81,28 +81,23 @@ module.exports = NodeHelper.create({
     _onStdout(buf) {
         const lines = String(buf).split("\n").map((l) => l.trim()).filter(Boolean);
         for (const line of lines) {
+
+            console.log("[MMM-VoiceControl][RAW]", line);  // <-- ADD THIS
+
             let msg;
             try { msg = JSON.parse(line); } catch (_) { continue; }
 
-            if (msg.type === "status") {
-                this.sendSocketNotification("MVC_STATUS", {
-                    state: msg.state || "idle",
-                    listening: true
-                });
-                continue;
-            }
-
-            if (msg.type === "wake") {
-                // optional future: play a beep
-                continue;
-            }
-
             if (msg.type === "command") {
                 const text = String(msg.text || "").toLowerCase();
+
+                console.log("[MMM-VoiceControl][COMMAND DETECTED]", text); // <-- ADD THIS
+
                 const intent = this._mapIntent(text);
                 if (intent) {
+                    console.log("[MMM-VoiceControl][INTENT]", intent.type); // <-- ADD THIS
                     this.sendSocketNotification("MVC_INTENT", { intent: intent.type, text, ...intent.payload });
                 } else {
+                    console.log("[MMM-VoiceControl][NO INTENT MATCH]");
                     this.sendSocketNotification("MVC_HEARD", { text });
                 }
             }
