@@ -18,7 +18,8 @@ module.exports = NodeHelper.create({
                 "meds screen",
                 "care screen",
                 "acknowledge alert",
-                "dismiss alert"
+                "dismiss alert",
+                "medication taken"
             ]
         };
     },
