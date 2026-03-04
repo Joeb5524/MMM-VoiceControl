@@ -56,6 +56,10 @@ module.exports = NodeHelper.create({
         ];
 
         this.proc = spawn(venvPy, args, { stdio: ["ignore", "pipe", "pipe"] });
+        this.proc.stderr.on("data", (buf) => {
+                        const s = String(buf).trim();
+                        if (s) console.log("[MMM-VoiceControl] PYERR:", s);
+                  });
 
         this.proc.stdout.on("data", (buf) => this._onStdout(buf));
         this.proc.stderr.on("data", () => {});
@@ -89,29 +93,29 @@ module.exports = NodeHelper.create({
 
             if (msg.type === "command") {
                 const text = String(msg.text || "").toLowerCase();
+                            console.log("[MMM-VoiceControl] PY:", line);
+                            console.log("[MMM-VoiceControl] command:", text);
+                            const intent = this._mapIntent(text);
+                            if (intent) {
+                                    console.log("[MMM-VoiceControl] intent:", intent.type, intent.payload || {});
+                                    this.sendSocketNotification("MVC_INTENT", { intent: intent.type, text, ...intent.payload });
+                                } else {
+                                    console.log("[MMM-VoiceControl] heard (no intent):", text);
+                                    this.sendSocketNotification("MVC_HEARD", { text });
+                               }
 
-                console.log("[MMM-VoiceControl][COMMAND DETECTED]", text); // <-- ADD THIS
-
-                const intent = this._mapIntent(text);
-                if (intent) {
-                    console.log("[MMM-VoiceControl][INTENT]", intent.type); // <-- ADD THIS
-                    this.sendSocketNotification("MVC_INTENT", { intent: intent.type, text, ...intent.payload });
-                } else {
-                    console.log("[MMM-VoiceControl][NO INTENT MATCH]");
-                    this.sendSocketNotification("MVC_HEARD", { text });
-                }
             }
         }
     },
 
-    _mapIntent(text) {
+    _mapIntent(text){
         if (text === "next screen") return { type: "NEXT_SCREEN", payload: {} };
         if (text === "home screen") return { type: "SET_SCREEN", payload: { screen: "home" } };
         if (text === "meds screen") return { type: "SET_SCREEN", payload: { screen: "meds" } };
         if (text === "care screen") return { type: "SET_SCREEN", payload: { screen: "care" } };
         if (text === "acknowledge alert") return { type: "ACK_ALERT", payload: {} };
         if (text === "dismiss alert") return { type: "DISMISS_ALERT", payload: {} };
-        if (text === "medication taken") return { type: "MED_TAKEN", payload: {} };
+        if (text.includes("medication taken")) return {type: "MED_TAKEN", payload: {} };
         return null;
-    }
+    },
 });

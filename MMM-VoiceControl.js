@@ -60,6 +60,7 @@ Module.register("MMM-VoiceControl", {
         }
 
         if (notification === "MVC_INTENT") {
+            console.log("[MMM-VoiceControl FRONT]", intent, payload);
             const intent = String(payload && payload.intent ? payload.intent : "");
             this.last = String(payload && payload.text ? payload.text : intent);
             this.state = "heard";
@@ -70,7 +71,7 @@ Module.register("MMM-VoiceControl", {
 
             if (intent === "ACK_ALERT") this.sendNotification("SR_ACK_ACTIVE_REQUEST", {});
             if (intent === "DISMISS_ALERT") this.sendNotification("SR_DISMISS_ACTIVE_REQUEST", {});
-            if (intent === "MED_TAKEN") this.sendNotification("MED_MARK_NEXT_DUE_TAKEN", {});
+            if (intent === "MED_TAKEN")     this.sendNotification("MED_MARK_NEXT_DUE_TAKEN", {});
 
             setTimeout(() => {
                 this.state = this.listening ? "listening_wake" : "idle";
