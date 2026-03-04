@@ -31,6 +31,7 @@ module.exports = NodeHelper.create({
             this._start();
             return;
         }
+
         if (notification === "MVC_STOP") {
             this._stop();
         }
@@ -56,13 +57,12 @@ module.exports = NodeHelper.create({
         ];
 
         this.proc = spawn(venvPy, args, { stdio: ["ignore", "pipe", "pipe"] });
-        this.proc.stderr.on("data", (buf) => {
-                        const s = String(buf).trim();
-                        if (s) console.log("[MMM-VoiceControl] PYERR:", s);
-                  });
 
         this.proc.stdout.on("data", (buf) => this._onStdout(buf));
-        this.proc.stderr.on("data", () => {});
+        this.proc.stderr.on("data", (buf) => {
+            const s = String(buf).trim();
+            if (s) console.log("[MMM-VoiceControl] PYERR:", s);
+        });
 
         this.proc.on("close", () => {
             this.proc = null;
@@ -84,38 +84,52 @@ module.exports = NodeHelper.create({
 
     _onStdout(buf) {
         const lines = String(buf).split("\n").map((l) => l.trim()).filter(Boolean);
-        for (const line of lines) {
 
-            console.log("[MMM-VoiceControl][RAW]", line);  // <-- ADD THIS
+        for (const line of lines) {
+            console.log("[MMM-VoiceControl][RAW]", line);
 
             let msg;
             try { msg = JSON.parse(line); } catch (_) { continue; }
 
+            if (msg.type === "status") {
+                this.sendSocketNotification("MVC_STATUS", {
+                    state: msg.state || "idle",
+                    listening: true
+                });
+                continue;
+            }
+
+            if (msg.type === "wake") {
+                // optional hook (beep, etc)
+                continue;
+            }
+
             if (msg.type === "command") {
                 const text = String(msg.text || "").toLowerCase();
-                            console.log("[MMM-VoiceControl] PY:", line);
-                            console.log("[MMM-VoiceControl] command:", text);
-                            const intent = this._mapIntent(text);
-                            if (intent) {
-                                    console.log("[MMM-VoiceControl] intent:", intent.type, intent.payload || {});
-                                    this.sendSocketNotification("MVC_INTENT", { intent: intent.type, text, ...intent.payload });
-                                } else {
-                                    console.log("[MMM-VoiceControl] heard (no intent):", text);
-                                    this.sendSocketNotification("MVC_HEARD", { text });
-                               }
+                console.log("[MMM-VoiceControl] PY:", line);
+                console.log("[MMM-VoiceControl] command:", text);
 
+                const intent = this._mapIntent(text);
+
+                if (intent) {
+                    console.log("[MMM-VoiceControl] intent:", intent.type, intent.payload || {});
+                    this.sendSocketNotification("MVC_INTENT", { intent: intent.type, text, ...intent.payload });
+                } else {
+                    console.log("[MMM-VoiceControl] heard (no intent):", text);
+                    this.sendSocketNotification("MVC_HEARD", { text });
+                }
             }
         }
     },
 
-    _mapIntent(text){
+    _mapIntent(text) {
         if (text === "next screen") return { type: "NEXT_SCREEN", payload: {} };
-        if (text === "home screen") return { type: "SET_SCREEN", payload: { screen: "home" } };
+        if (text.includes("home")) return { type: "SET_SCREEN", payload: { screen: "home" } };
         if (text === "meds screen") return { type: "SET_SCREEN", payload: { screen: "meds" } };
         if (text === "care screen") return { type: "SET_SCREEN", payload: { screen: "care" } };
         if (text === "acknowledge alert") return { type: "ACK_ALERT", payload: {} };
         if (text === "dismiss alert") return { type: "DISMISS_ALERT", payload: {} };
-        if (text.includes("medication taken")) return {type: "MED_TAKEN", payload: {} };
+        if (text.includes("medication taken")) return { type: "MED_TAKEN", payload: {} };
         return null;
-    },
+    }
 });

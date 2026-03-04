@@ -52,36 +52,60 @@ Module.register("MMM-VoiceControl", {
             this.last = String(payload && payload.text ? payload.text : "");
             this.state = "heard";
             this.updateDom(0);
+
             setTimeout(() => {
                 this.state = this.listening ? "listening_wake" : "idle";
                 this.updateDom(0);
             }, 1200);
+
             return;
         }
 
         if (notification === "MVC_INTENT") {
-            console.log("[MMM-VoiceControl FRONT]", intent, payload);
             const intent = String(payload && payload.intent ? payload.intent : "");
             this.last = String(payload && payload.text ? payload.text : intent);
             this.state = "heard";
             this.updateDom(0);
 
-            if (intent === "NEXT_SCREEN") this.sendNotification("ASSIST_TOUCH_NEXT_SCREEN", {});
-            if (intent === "SET_SCREEN" && payload && payload.screen) this.sendNotification("ASSIST_SCREEN_SET", { screen: payload.screen });
+            // Safe debug
+            console.log("[MMM-VoiceControl FRONT] intent:", intent, "payload:", payload);
 
-            if (intent === "ACK_ALERT") this.sendNotification("SR_ACK_ACTIVE_REQUEST", {});
-            if (intent === "DISMISS_ALERT") this.sendNotification("SR_DISMISS_ACTIVE_REQUEST", {});
-            if (intent === "MED_TAKEN")     this.sendNotification("MED_MARK_NEXT_DUE_TAKEN", {});
+            if (intent === "NEXT_SCREEN") {
+                console.log("[MMM-VoiceControl FRONT] send ASSIST_TOUCH_NEXT_SCREEN");
+                this.sendNotification("ASSIST_TOUCH_NEXT_SCREEN", {});
+            }
+
+            if (intent === "SET_SCREEN" && payload && payload.screen) {
+                console.log("[MMM-VoiceControl FRONT] send ASSIST_SCREEN_SET", payload.screen);
+                this.sendNotification("ASSIST_SCREEN_SET", { screen: payload.screen });
+            }
+
+            if (intent === "ACK_ALERT") {
+                console.log("[MMM-VoiceControl FRONT] send SR_ACK_ACTIVE_REQUEST");
+                this.sendNotification("SR_ACK_ACTIVE_REQUEST", {});
+            }
+
+            if (intent === "DISMISS_ALERT") {
+                console.log("[MMM-VoiceControl FRONT] send SR_DISMISS_ACTIVE_REQUEST");
+                this.sendNotification("SR_DISMISS_ACTIVE_REQUEST", {});
+            }
+
+            if (intent === "MED_TAKEN") {
+                console.log("[MMM-VoiceControl FRONT] send MED_MARK_NEXT_DUE_TAKEN");
+                this.sendNotification("MED_MARK_NEXT_DUE_TAKEN", {});
+            }
 
             setTimeout(() => {
                 this.state = this.listening ? "listening_wake" : "idle";
                 this.updateDom(0);
             }, 1200);
+
+            return;
         }
     },
 
     _start() {
-        if (this.listening) return;
+        // We only start once; actual listening flag comes from MVC_STATUS
         this.sendSocketNotification("MVC_START", {
             modelDir: this.config.modelDir,
             wakeWord: this.config.wakeWord,
@@ -92,7 +116,6 @@ Module.register("MMM-VoiceControl", {
     },
 
     _stop() {
-        if (!this.listening) return;
         this.sendSocketNotification("MVC_STOP", {});
     },
 
