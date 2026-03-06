@@ -19,7 +19,14 @@ module.exports = NodeHelper.create({
                 "care screen",
                 "acknowledge alert",
                 "dismiss alert",
-                "medication taken"
+                "medication taken",
+                "play calm music",
+                "play sleep music",
+                "play morning music",
+                "play exercise music",
+                "play music",
+                "stop music",
+                "pause music"
             ]
         };
     },
@@ -130,6 +137,13 @@ module.exports = NodeHelper.create({
         if (text === "acknowledge alert") return { type: "ACK_ALERT", payload: {} };
         if (text === "dismiss alert") return { type: "DISMISS_ALERT", payload: {} };
         if (text.includes("medication taken")) return { type: "MED_TAKEN", payload: {} };
+
+        if (text === "stop music" || text === "pause music") return { type: "MUSIC_STOP", payload: {} };
+        if (text === "play music") return { type: "MUSIC_PLAY_QUERY", payload: { query: "music" } };
+        if (text === "play calm music") return { type: "MUSIC_PLAY_QUERY", payload: { query: "calm" } };
+        if (text === "play sleep music") return { type: "MUSIC_PLAY_QUERY", payload: { query: "sleep" } };
+        if (text === "play morning music") return { type: "MUSIC_PLAY_QUERY", payload: { query: "morning" } };
+        if (text === "play exercise music") return { type: "MUSIC_PLAY_QUERY", payload: { query: "exercise" } };
         return null;
     }
 });

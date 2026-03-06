@@ -14,7 +14,14 @@ Module.register("MMM-VoiceControl", {
             "care screen",
             "acknowledge alert",
             "dismiss alert",
-            "medication taken"
+            "medication taken",
+            "play calm music",
+            "play sleep music",
+            "play morning music",
+            "play exercise music",
+            "play music",
+            "stop music",
+            "pause music"
         ]
     },
 
@@ -93,6 +100,16 @@ Module.register("MMM-VoiceControl", {
             if (intent === "MED_TAKEN") {
                 console.log("[MMM-VoiceControl FRONT] send MED_MARK_NEXT_DUE_TAKEN");
                 this.sendNotification("MED_MARK_NEXT_DUE_TAKEN", {});
+            }
+
+            if (intent === "MUSIC_PLAY_QUERY") {
+                console.log("[MMM-VoiceControl FRONT] send MUSIC_PLAY_QUERY", payload.query);
+                this.sendNotification("MUSIC_PLAY_QUERY", { query: payload.query || "" });
+            }
+
+            if (intent === "MUSIC_STOP") {
+                console.log("[MMM-VoiceControl FRONT] send MUSIC_STOP");
+                this.sendNotification("MUSIC_STOP", {});
             }
 
             setTimeout(() => {
