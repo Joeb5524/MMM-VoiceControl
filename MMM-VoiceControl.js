@@ -6,7 +6,10 @@ Module.register("MMM-VoiceControl", {
         wakeWord: "mirror",
         commandWindowMs: 4000,
         device: "default",
-        listenWhenShownOnly: true,
+
+
+        listenWhenShownOnly: false,
+
         commands: [
             "next screen",
             "home screen",
@@ -23,7 +26,6 @@ Module.register("MMM-VoiceControl", {
             "stop music",
             "pause music",
 
-            // Hue
             "lights on",
             "lights off",
             "toggle lights",
@@ -38,6 +40,7 @@ Module.register("MMM-VoiceControl", {
         this.state = "idle";
         this.listening = false;
         this.last = "";
+        this._started = false;
     },
 
     getStyles() {
@@ -49,7 +52,7 @@ Module.register("MMM-VoiceControl", {
     },
 
     resume() {
-        this._start();
+        if (this.config.listenWhenShownOnly) this._start();
     },
 
     notificationReceived(notification) {
@@ -83,15 +86,34 @@ Module.register("MMM-VoiceControl", {
             this.state = "heard";
             this.updateDom(0);
 
-            if (intent === "NEXT_SCREEN") this.sendNotification("ASSIST_TOUCH_NEXT_SCREEN", {});
-            if (intent === "SET_SCREEN" && payload && payload.screen) this.sendNotification("ASSIST_SCREEN_SET", { screen: payload.screen });
-            if (intent === "ACK_ALERT") this.sendNotification("SR_ACK_ACTIVE_REQUEST", {});
-            if (intent === "DISMISS_ALERT") this.sendNotification("SR_DISMISS_ACTIVE_REQUEST", {});
-            if (intent === "MED_TAKEN") this.sendNotification("MED_MARK_NEXT_DUE_TAKEN", {});
-            if (intent === "MUSIC_PLAY_QUERY") this.sendNotification("MUSIC_PLAY_QUERY", { query: payload.query || "" });
-            if (intent === "MUSIC_STOP") this.sendNotification("MUSIC_STOP", {});
+            if (intent === "NEXT_SCREEN") {
+                this.sendNotification("ASSIST_TOUCH_NEXT_SCREEN", {});
+            }
 
-            //huestuff
+            if (intent === "SET_SCREEN" && payload && payload.screen) {
+                this.sendNotification("ASSIST_SCREEN_SET", { screen: payload.screen });
+            }
+
+            if (intent === "ACK_ALERT") {
+                this.sendNotification("SR_ACK_ACTIVE_REQUEST", {});
+            }
+
+            if (intent === "DISMISS_ALERT") {
+                this.sendNotification("SR_DISMISS_ACTIVE_REQUEST", {});
+            }
+
+            if (intent === "MED_TAKEN") {
+                this.sendNotification("MED_MARK_NEXT_DUE_TAKEN", {});
+            }
+
+            if (intent === "MUSIC_PLAY_QUERY") {
+                this.sendNotification("MUSIC_PLAY_QUERY", { query: payload.query || "" });
+            }
+
+            if (intent === "MUSIC_STOP") {
+                this.sendNotification("MUSIC_STOP", {});
+            }
+
             if (intent === "HUE_COMMAND" && payload && payload.hue) {
                 this.sendNotification("HUE_COMMAND", payload.hue);
             }
@@ -106,6 +128,9 @@ Module.register("MMM-VoiceControl", {
     },
 
     _start() {
+        if (this._started) return;
+        this._started = true;
+
         this.sendSocketNotification("MVC_START", {
             modelDir: this.config.modelDir,
             wakeWord: this.config.wakeWord,
@@ -116,6 +141,7 @@ Module.register("MMM-VoiceControl", {
     },
 
     _stop() {
+        this._started = false;
         this.sendSocketNotification("MVC_STOP", {});
     },
 
