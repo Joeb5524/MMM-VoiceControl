@@ -21,7 +21,16 @@ Module.register("MMM-VoiceControl", {
             "play exercise music",
             "play music",
             "stop music",
-            "pause music"
+            "pause music",
+
+            // Hue
+            "lights on",
+            "lights off",
+            "toggle lights",
+            "set lights red",
+            "set lights green",
+            "set lights blue",
+            "set lights white"
         ]
     },
 
@@ -74,42 +83,17 @@ Module.register("MMM-VoiceControl", {
             this.state = "heard";
             this.updateDom(0);
 
-            // Safe debug
-            console.log("[MMM-VoiceControl FRONT] intent:", intent, "payload:", payload);
+            if (intent === "NEXT_SCREEN") this.sendNotification("ASSIST_TOUCH_NEXT_SCREEN", {});
+            if (intent === "SET_SCREEN" && payload && payload.screen) this.sendNotification("ASSIST_SCREEN_SET", { screen: payload.screen });
+            if (intent === "ACK_ALERT") this.sendNotification("SR_ACK_ACTIVE_REQUEST", {});
+            if (intent === "DISMISS_ALERT") this.sendNotification("SR_DISMISS_ACTIVE_REQUEST", {});
+            if (intent === "MED_TAKEN") this.sendNotification("MED_MARK_NEXT_DUE_TAKEN", {});
+            if (intent === "MUSIC_PLAY_QUERY") this.sendNotification("MUSIC_PLAY_QUERY", { query: payload.query || "" });
+            if (intent === "MUSIC_STOP") this.sendNotification("MUSIC_STOP", {});
 
-            if (intent === "NEXT_SCREEN") {
-                console.log("[MMM-VoiceControl FRONT] send ASSIST_TOUCH_NEXT_SCREEN");
-                this.sendNotification("ASSIST_TOUCH_NEXT_SCREEN", {});
-            }
-
-            if (intent === "SET_SCREEN" && payload && payload.screen) {
-                console.log("[MMM-VoiceControl FRONT] send ASSIST_SCREEN_SET", payload.screen);
-                this.sendNotification("ASSIST_SCREEN_SET", { screen: payload.screen });
-            }
-
-            if (intent === "ACK_ALERT") {
-                console.log("[MMM-VoiceControl FRONT] send SR_ACK_ACTIVE_REQUEST");
-                this.sendNotification("SR_ACK_ACTIVE_REQUEST", {});
-            }
-
-            if (intent === "DISMISS_ALERT") {
-                console.log("[MMM-VoiceControl FRONT] send SR_DISMISS_ACTIVE_REQUEST");
-                this.sendNotification("SR_DISMISS_ACTIVE_REQUEST", {});
-            }
-
-            if (intent === "MED_TAKEN") {
-                console.log("[MMM-VoiceControl FRONT] send MED_MARK_NEXT_DUE_TAKEN");
-                this.sendNotification("MED_MARK_NEXT_DUE_TAKEN", {});
-            }
-
-            if (intent === "MUSIC_PLAY_QUERY") {
-                console.log("[MMM-VoiceControl FRONT] send MUSIC_PLAY_QUERY", payload.query);
-                this.sendNotification("MUSIC_PLAY_QUERY", { query: payload.query || "" });
-            }
-
-            if (intent === "MUSIC_STOP") {
-                console.log("[MMM-VoiceControl FRONT] send MUSIC_STOP");
-                this.sendNotification("MUSIC_STOP", {});
+            //huestuff
+            if (intent === "HUE_COMMAND" && payload && payload.hue) {
+                this.sendNotification("HUE_COMMAND", payload.hue);
             }
 
             setTimeout(() => {
@@ -122,7 +106,6 @@ Module.register("MMM-VoiceControl", {
     },
 
     _start() {
-        // We only start once; actual listening flag comes from MVC_STATUS
         this.sendSocketNotification("MVC_START", {
             modelDir: this.config.modelDir,
             wakeWord: this.config.wakeWord,
