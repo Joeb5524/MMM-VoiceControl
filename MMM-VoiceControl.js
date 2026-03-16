@@ -15,6 +15,7 @@ Module.register("MMM-VoiceControl", {
             "home screen",
             "meds screen",
             "care screen",
+            "joe screen",
             "acknowledge alert",
             "dismiss alert",
             "medication taken",

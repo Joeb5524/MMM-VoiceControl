@@ -17,6 +17,7 @@ module.exports = NodeHelper.create({
                 "home screen",
                 "meds screen",
                 "care screen",
+                "joe screen",
                 "acknowledge alert",
                 "dismiss alert",
                 "medication taken",
@@ -133,6 +134,7 @@ module.exports = NodeHelper.create({
         if (text.includes("home")) return { type: "SET_SCREEN", payload: { screen: "home" } };
         if (text === "meds screen") return { type: "SET_SCREEN", payload: { screen: "meds" } };
         if (text === "care screen") return { type: "SET_SCREEN", payload: { screen: "care" } };
+        if (text === "joe screen") return { type: "SET_SCREEN", payload: { screen: "joe" } };
         if (text === "acknowledge alert") return { type: "ACK_ALERT", payload: {} };
         if (text === "dismiss alert") return { type: "DISMISS_ALERT", payload: {} };
         if (text.includes("medication taken")) return { type: "MED_TAKEN", payload: {} };
