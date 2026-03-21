@@ -15,6 +15,8 @@ Module.register("MMM-VoiceControl", {
             "home screen",
             "meds screen",
             "care screen",
+            "call carer",
+            "send help",
             "joe screen",
             "acknowledge alert",
             "dismiss alert",
@@ -105,6 +107,14 @@ Module.register("MMM-VoiceControl", {
 
             if (intent === "MED_TAKEN") {
                 this.sendNotification("MED_MARK_NEXT_DUE_TAKEN", {});
+            }
+
+            if (intent === "CARE_ALERT") {
+                this.sendNotification("SR_CARE_ALERT", {
+                    title: "Mirror alert",
+                    message: payload && payload.message ? payload.message : "Assistance requested (voice).",
+                    level: "help"
+                });
             }
 
             if (intent === "MUSIC_PLAY_QUERY") {
