@@ -16,6 +16,9 @@ Module.register("MMM-VoiceControl", {
             "meds screen",
             "care screen",
             "call carer",
+            "answer call",
+            "decline call",
+            "hang up",
             "send help",
             "joe screen",
             "acknowledge alert",
@@ -109,7 +112,26 @@ Module.register("MMM-VoiceControl", {
                 this.sendNotification("MED_MARK_NEXT_DUE_TAKEN", {});
             }
 
-            if (intent === "CARE_ALERT") {
+            
+            if (intent === "CALL_ACCEPT") {
+                this.sendNotification("AUDIOCALL_ACCEPT_REQUEST", {});
+            }
+
+            if (intent === "CALL_DECLINE") {
+                this.sendNotification("AUDIOCALL_DECLINE_REQUEST", {});
+            }
+
+            if (intent === "CALL_HANGUP") {
+                this.sendNotification("AUDIOCALL_END_REQUEST", {});
+            }
+
+if (intent === "CARE_ALERT") {
+                const heard = payload && payload.text ? String(payload.text).toLowerCase() : "";
+                if (heard.includes("call carer")) {
+                    this.sendNotification("AUDIOCALL_START_REQUEST", { reason: "voice" });
+                    return;
+                }
+
                 this.sendNotification("SR_CARE_ALERT", {
                     title: "Mirror alert",
                     message: payload && payload.message ? payload.message : "Assistance requested (voice).",
