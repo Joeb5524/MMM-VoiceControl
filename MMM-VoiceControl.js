@@ -196,8 +196,8 @@ Module.register("MMM-VoiceControl", {
             title.textContent = "Voice control";
             detail.textContent = `Say "${this.config.wakeWord}" to start`;
         } else if (this.state === "listening_wake") {
-            title.textContent = "Wake word ready";
-            detail.textContent = `Say "${this.config.wakeWord}"`;
+            title.textContent = `Say "${this.config.wakeWord}"`;
+            detail.textContent = "Voice control ready";
         } else if (this.state === "listening_cmd") {
             title.textContent = "Listening";
             detail.textContent = "Speak your command";

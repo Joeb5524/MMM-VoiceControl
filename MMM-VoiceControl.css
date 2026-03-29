@@ -56,10 +56,10 @@
 
 .mvc-card--listening_wake,
 .mvc-card--listening_cmd {
-    border-color: rgba(115, 201, 255, 0.42);
+    border-color: rgba(255, 120, 190, 0.46);
     background:
-        linear-gradient(180deg, rgba(16, 45, 66, 0.96), rgba(10, 23, 36, 0.92));
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.36), 0 0 0 1px rgba(115, 201, 255, 0.08);
+        linear-gradient(180deg, rgba(74, 24, 53, 0.96), rgba(37, 10, 27, 0.92));
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.36), 0 0 0 1px rgba(255, 120, 190, 0.1);
     opacity: 1;
 }
 
@@ -73,8 +73,8 @@
 
 .mvc-card--listening_wake .mvc-dot,
 .mvc-card--listening_cmd .mvc-dot {
-    background: #73c9ff;
-    box-shadow: 0 0 0 4px rgba(115, 201, 255, 0.2);
+    background: #ff78be;
+    box-shadow: 0 0 0 4px rgba(255, 120, 190, 0.22);
 }
 
 .mvc-card--heard .mvc-dot {
