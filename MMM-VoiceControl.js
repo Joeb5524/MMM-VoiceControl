@@ -6,10 +6,7 @@ Module.register("MMM-VoiceControl", {
         wakeWord: "mirror",
         commandWindowMs: 4000,
         device: "default",
-
-
         listenWhenShownOnly: false,
-
         commands: [
             "next screen",
             "home screen",
@@ -31,7 +28,6 @@ Module.register("MMM-VoiceControl", {
             "play music",
             "stop music",
             "pause music",
-
             "lights on",
             "lights off",
             "toggle lights",
@@ -112,7 +108,6 @@ Module.register("MMM-VoiceControl", {
                 this.sendNotification("MED_MARK_NEXT_DUE_TAKEN", {});
             }
 
-            
             if (intent === "CALL_ACCEPT") {
                 this.sendNotification("AUDIOCALL_ACCEPT_REQUEST", {});
             }
@@ -125,7 +120,7 @@ Module.register("MMM-VoiceControl", {
                 this.sendNotification("AUDIOCALL_END_REQUEST", {});
             }
 
-if (intent === "CARE_ALERT") {
+            if (intent === "CARE_ALERT") {
                 const heard = payload && payload.text ? String(payload.text).toLowerCase() : "";
                 if (heard.includes("call carer")) {
                     this.sendNotification("AUDIOCALL_START_REQUEST", { reason: "voice" });
@@ -182,22 +177,43 @@ if (intent === "CARE_ALERT") {
         const root = document.createElement("div");
         root.className = "mvc-root";
 
-        const pill = document.createElement("div");
-        pill.className = `mvc-pill mvc-pill--${this.state}`;
+        const card = document.createElement("div");
+        card.className = `mvc-card mvc-card--${this.state}`;
+
+        const status = document.createElement("div");
+        status.className = "mvc-status";
+
+        const dot = document.createElement("span");
+        dot.className = "mvc-dot";
+
+        const title = document.createElement("span");
+        title.className = "mvc-title";
+
+        const detail = document.createElement("div");
+        detail.className = "mvc-detail";
 
         if (this.state === "idle") {
-            pill.style.display = "none";
+            title.textContent = "Voice control";
+            detail.textContent = `Say "${this.config.wakeWord}" to start`;
         } else if (this.state === "listening_wake") {
-            pill.textContent = `Say "${this.config.wakeWord}"`;
+            title.textContent = "Wake word ready";
+            detail.textContent = `Say "${this.config.wakeWord}"`;
         } else if (this.state === "listening_cmd") {
-            pill.textContent = "Listening…";
+            title.textContent = "Listening";
+            detail.textContent = "Speak your command";
         } else if (this.state === "heard") {
-            pill.textContent = this.last ? `✓ ${this.last}` : "✓";
+            title.textContent = "Command received";
+            detail.textContent = this.last || "Voice input captured";
         } else {
-            pill.textContent = "Voice unavailable";
+            title.textContent = "Voice unavailable";
+            detail.textContent = "Check microphone connection";
         }
 
-        root.appendChild(pill);
+        status.appendChild(dot);
+        status.appendChild(title);
+        card.appendChild(status);
+        card.appendChild(detail);
+        root.appendChild(card);
         return root;
     }
 });
