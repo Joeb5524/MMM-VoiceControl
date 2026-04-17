@@ -1,14 +1,7 @@
 {
   "name": "mmm-voicecontrol",
-  "version": "1.0.0",
-  "description": "Offline voice control with wake word for MagicMirror",
+  "version": "1.1.0",
+  "description": "Offline wake-word voice control for MagicMirror using Python Vosk",
   "main": "node_helper.js",
-  "dependencies": {
-    "vosk": "0.3.39"
-  },
-  "overrides": {
-    "ffi-napi": "npm:@jellybrick/ffi-napi@4.0.18",
-    "ref-napi": "npm:@jellybrick/ref-napi@4.0.10",
-    "get-uv-event-loop-napi-h": "npm:@jellybrick/get-uv-event-loop-napi-h@1.0.7"
-  }
+  "license": "MIT"
 }
