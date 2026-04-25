@@ -1,315 +1,97 @@
 .mvc-root {
-    --mvc-surface-top: rgba(14, 31, 43, 0.96);
-    --mvc-surface-bottom: rgba(5, 13, 20, 0.94);
-    --mvc-border: rgba(132, 182, 210, 0.28);
-    --mvc-glow: rgba(45, 173, 214, 0.2);
-    --mvc-accent: #69d5ff;
-    --mvc-accent-soft: rgba(105, 213, 255, 0.18);
-    --mvc-text: #f2fbff;
-    --mvc-muted: rgba(220, 238, 246, 0.76);
-    --mvc-shadow: 0 20px 48px rgba(0, 0, 0, 0.36);
-    font-family: "Aptos", "Segoe UI Variable", "Segoe UI", sans-serif;
-    width: min(100%, 420px);
-}
-
-.mvc-root--overlay {
     position: fixed;
-    top: 18px;
-    right: 18px;
+    top: 14px;
+    right: 14px;
     z-index: 9999;
     pointer-events: none;
-    width: min(420px, calc(100vw - 36px));
-}
-
-.mvc-root--region {
-    position: relative;
 }
 
 .mvc-card {
-    position: relative;
-    overflow: hidden;
-    border: 1px solid var(--mvc-border);
-    border-radius: 26px;
-    padding: 18px 20px 20px;
-    color: var(--mvc-text);
+    width: min(260px, calc(100vw - 28px));
+    padding: 12px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 14px;
     background:
-            radial-gradient(circle at top left, rgba(90, 196, 255, 0.14), transparent 44%),
-            linear-gradient(160deg, var(--mvc-surface-top), var(--mvc-surface-bottom));
-    box-shadow: var(--mvc-shadow);
-    backdrop-filter: blur(12px);
-}
-
-.mvc-card::before {
-    content: "";
-    position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    background: linear-gradient(135deg, rgba(130, 214, 255, 0.22), transparent 42%, rgba(255, 255, 255, 0.06));
-    opacity: 0.8;
-    pointer-events: none;
-}
-
-.mvc-card > * {
-    position: relative;
-    z-index: 1;
-}
-
-.mvc-card--health-starting,
-.mvc-card--health-ready {
-    --mvc-border: rgba(132, 182, 210, 0.28);
-    --mvc-glow: rgba(45, 173, 214, 0.2);
-    --mvc-accent: #69d5ff;
-    --mvc-accent-soft: rgba(105, 213, 255, 0.18);
-}
-
-.mvc-card--health-listening.mvc-card--stage-wake {
-    --mvc-surface-top: rgba(11, 40, 50, 0.96);
-    --mvc-surface-bottom: rgba(3, 17, 22, 0.94);
-    --mvc-border: rgba(92, 220, 201, 0.34);
-    --mvc-glow: rgba(92, 220, 201, 0.22);
-    --mvc-accent: #6af5de;
-    --mvc-accent-soft: rgba(106, 245, 222, 0.2);
-}
-
-.mvc-card--health-listening.mvc-card--stage-command {
-    --mvc-surface-top: rgba(58, 39, 10, 0.98);
-    --mvc-surface-bottom: rgba(23, 14, 4, 0.96);
-    --mvc-border: rgba(255, 196, 78, 0.42);
-    --mvc-glow: rgba(255, 196, 78, 0.28);
-    --mvc-accent: #ffc44e;
-    --mvc-accent-soft: rgba(255, 196, 78, 0.24);
-}
-
-.mvc-card--health-restarting {
-    --mvc-surface-top: rgba(48, 31, 12, 0.98);
-    --mvc-surface-bottom: rgba(19, 12, 4, 0.95);
-    --mvc-border: rgba(255, 160, 77, 0.42);
-    --mvc-glow: rgba(255, 160, 77, 0.22);
-    --mvc-accent: #ffb366;
-    --mvc-accent-soft: rgba(255, 179, 102, 0.2);
-}
-
-.mvc-card--health-error {
-    --mvc-surface-top: rgba(66, 22, 25, 0.98);
-    --mvc-surface-bottom: rgba(25, 8, 10, 0.95);
-    --mvc-border: rgba(255, 120, 120, 0.42);
-    --mvc-glow: rgba(255, 120, 120, 0.22);
-    --mvc-accent: #ff8d8d;
-    --mvc-accent-soft: rgba(255, 141, 141, 0.18);
-}
-
-.mvc-card--feedback-success {
-    box-shadow: var(--mvc-shadow), 0 0 0 1px rgba(109, 220, 162, 0.22), 0 0 28px rgba(109, 220, 162, 0.12);
-}
-
-.mvc-card--feedback-warning {
-    box-shadow: var(--mvc-shadow), 0 0 0 1px rgba(255, 196, 78, 0.22), 0 0 28px rgba(255, 196, 78, 0.12);
-}
-
-.mvc-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 14px;
+            linear-gradient(180deg, rgba(34, 41, 56, 0.94), rgba(12, 16, 24, 0.9));
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.34);
+    color: #f4f7fb;
+    opacity: 0.9;
+    backdrop-filter: blur(10px);
 }
 
 .mvc-status {
     display: flex;
     align-items: center;
-    gap: 14px;
-    min-width: 0;
+    gap: 10px;
 }
 
 .mvc-dot {
-    position: relative;
-    width: 16px;
-    height: 16px;
-    flex: 0 0 16px;
+    width: 10px;
+    height: 10px;
+    flex: 0 0 10px;
     border-radius: 50%;
-    background: var(--mvc-accent);
-    box-shadow: 0 0 0 8px var(--mvc-accent-soft), 0 0 20px var(--mvc-glow);
-}
-
-.mvc-card--stage-command .mvc-dot {
-    animation: mvc-pulse 1.15s ease-out infinite;
-}
-
-.mvc-status-copy {
-    min-width: 0;
-}
-
-.mvc-eyebrow {
-    margin-bottom: 4px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--mvc-accent);
+    background: #8e9db2;
+    box-shadow: 0 0 0 4px rgba(142, 157, 178, 0.16);
 }
 
 .mvc-title {
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 1.08;
-    letter-spacing: -0.02em;
-    text-wrap: balance;
-}
-
-.mvc-badge {
-    padding: 7px 11px;
-    border-radius: 999px;
-    border: 1px solid var(--mvc-border);
-    background: rgba(255, 255, 255, 0.06);
-    color: var(--mvc-text);
-    font-size: 11px;
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    white-space: nowrap;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.2px;
 }
 
 .mvc-detail {
-    margin-top: 16px;
-    font-size: 16px;
-    line-height: 1.45;
-    color: var(--mvc-muted);
-    text-wrap: pretty;
-}
-
-.mvc-transcript {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-top: 18px;
-    padding: 14px 16px;
-    border-radius: 18px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.05);
-    font-size: 17px;
-    font-weight: 600;
-    line-height: 1.35;
-    color: var(--mvc-text);
-    word-break: break-word;
-}
-
-.mvc-transcript-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--mvc-muted);
-}
-
-.mvc-progress {
-    margin-top: 18px;
-    height: 12px;
-    border-radius: 999px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.09);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.mvc-progress-bar {
-    width: 100%;
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, rgba(255, 242, 189, 0.95), rgba(255, 196, 78, 0.9));
-    transform-origin: left center;
-    animation: mvc-command-window var(--mvc-command-window-ms, 4000ms) linear forwards;
-}
-
-.mvc-progress-label {
-    margin-top: 8px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(255, 233, 177, 0.92);
-}
-
-.mvc-hints {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 18px;
-}
-
-.mvc-hint {
-    padding: 10px 12px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.05);
+    margin-top: 6px;
+    padding-left: 20px;
     font-size: 13px;
-    font-weight: 600;
-    line-height: 1;
-    color: var(--mvc-text);
-    white-space: nowrap;
-}
-
-.mvc-meta {
-    margin-top: 14px;
-    font-size: 12px;
-    line-height: 1.4;
-    color: rgba(255, 255, 255, 0.56);
+    line-height: 1.35;
+    color: rgba(235, 241, 248, 0.82);
     word-break: break-word;
 }
 
-@keyframes mvc-command-window {
-    from {
-        transform: scaleX(1);
-    }
-
-    to {
-        transform: scaleX(0);
-    }
+.mvc-card--idle {
+    opacity: 0.72;
 }
 
-@keyframes mvc-pulse {
-    0% {
-        box-shadow: 0 0 0 0 var(--mvc-accent-soft), 0 0 20px var(--mvc-glow);
-    }
-
-    70% {
-        box-shadow: 0 0 0 12px rgba(255, 196, 78, 0), 0 0 32px var(--mvc-glow);
-    }
-
-    100% {
-        box-shadow: 0 0 0 0 rgba(255, 196, 78, 0), 0 0 20px var(--mvc-glow);
-    }
+.mvc-card--listening_wake,
+.mvc-card--listening_cmd {
+    border-color: rgba(255, 120, 190, 0.46);
+    background:
+            linear-gradient(180deg, rgba(74, 24, 53, 0.96), rgba(37, 10, 27, 0.92));
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.36), 0 0 0 1px rgba(255, 120, 190, 0.1);
+    opacity: 1;
 }
 
-@media (max-width: 640px) {
-    .mvc-root {
-        width: min(100%, calc(100vw - 24px));
-    }
+.mvc-card--heard {
+    border-color: rgba(109, 220, 162, 0.42);
+    background:
+            linear-gradient(180deg, rgba(21, 55, 44, 0.96), rgba(11, 27, 22, 0.92));
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.36), 0 0 0 1px rgba(109, 220, 162, 0.08);
+    opacity: 1;
+}
 
-    .mvc-root--overlay {
-        top: 12px;
-        right: 12px;
-        width: calc(100vw - 24px);
-    }
+.mvc-card--listening_wake .mvc-dot,
+.mvc-card--listening_cmd .mvc-dot {
+    background: #ff78be;
+    box-shadow: 0 0 0 4px rgba(255, 120, 190, 0.22);
+}
 
-    .mvc-card {
-        border-radius: 22px;
-        padding: 16px 16px 18px;
-    }
+.mvc-card--heard .mvc-dot {
+    background: #6ddca2;
+    box-shadow: 0 0 0 4px rgba(109, 220, 162, 0.2);
+}
 
-    .mvc-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
+.mvc-card--error,
+.mvc-card--unavailable {
+    border-color: rgba(255, 120, 120, 0.4);
+    background:
+            linear-gradient(180deg, rgba(70, 25, 25, 0.96), rgba(35, 12, 12, 0.92));
+    opacity: 1;
+}
 
-    .mvc-badge {
-        align-self: flex-start;
-    }
-
-    .mvc-title {
-        font-size: 21px;
-    }
-
-    .mvc-detail,
-    .mvc-transcript {
-        font-size: 15px;
-    }
+.mvc-card--error .mvc-dot,
+.mvc-card--unavailable .mvc-dot {
+    background: #ff7878;
+    box-shadow: 0 0 0 4px rgba(255, 120, 120, 0.18);
 }
