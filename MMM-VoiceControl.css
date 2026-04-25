@@ -1,97 +1,653 @@
 .mvc-root {
+    --bg-1: #08111f;
+    --bg-2: #12345a;
+    --text-main: #f8fbff;
+    --text-muted: #d7e3f1;
+    --glass-bg: rgba(255, 255, 255, 0.16);
+    --glass-bg-strong: rgba(255, 255, 255, 0.24);
+    --glass-border: rgba(255, 255, 255, 0.38);
+    --glass-shadow: rgba(0, 0, 0, 0.35);
+    --focus: #ffd966;
+    --danger: #ff6b6b;
+    --success: #7df0b1;
+    --radius: 24px;
+    --blur: 18px;
+    --mvc-accent: #9ed8ff;
+    --mvc-accent-soft: rgba(158, 216, 255, 0.24);
+    --mvc-accent-glow: rgba(90, 180, 255, 0.42);
+    color: var(--text-main);
+    font-family: "Aptos", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+    line-height: 1.6;
+    width: min(100%, 520px);
+}
+
+.mvc-root--overlay {
     position: fixed;
-    top: 14px;
-    right: 14px;
+    top: 18px;
+    right: 18px;
     z-index: 9999;
+    pointer-events: none;
+    width: min(520px, calc(100vw - 36px));
+}
+
+.mvc-root--region {
+    position: relative;
+}
+
+.mvc-root h1,
+.mvc-root h2,
+.mvc-root h3,
+.mvc-root p {
+    max-width: 44ch;
+    margin: 0;
+}
+
+.mvc-root :where(.glass) {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(1rem, 2vw, 1.3rem);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    background: var(--glass-bg);
+    box-shadow: 0 18px 50px var(--glass-shadow);
+    backdrop-filter: blur(var(--blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(160%);
+}
+
+.mvc-root :where(.glass)::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.42),
+            rgba(255, 255, 255, 0.06) 35%,
+            transparent 70%
+        );
     pointer-events: none;
 }
 
-.mvc-card {
-    width: min(260px, calc(100vw - 28px));
-    padding: 12px 14px;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 14px;
-    background:
-            linear-gradient(180deg, rgba(34, 41, 56, 0.94), rgba(12, 16, 24, 0.9));
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.34);
-    color: #f4f7fb;
-    opacity: 0.9;
-    backdrop-filter: blur(10px);
+.mvc-root :where(.glass) > * {
+    position: relative;
+    z-index: 1;
 }
 
-.mvc-status {
+.mvc-root :where(.glass-readable) {
+    background: var(--glass-bg-strong);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.mvc-root :where(.glass-stack) {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.mvc-root :focus-visible {
+    outline: 4px solid var(--focus);
+    outline-offset: 4px;
+}
+
+.mvc-panel {
+    position: relative;
+    padding: clamp(1rem, 2.8vw, 1.75rem);
+    border-radius: calc(var(--radius) + 8px);
+    background:
+        radial-gradient(circle at top left, rgba(90, 180, 255, 0.34), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(180, 120, 255, 0.22), transparent 42%),
+        linear-gradient(145deg, rgba(8, 17, 31, 0.78), rgba(18, 52, 90, 0.5));
+}
+
+.mvc-panel::after {
+    content: "";
+    position: absolute;
+    inset: auto -12% -32% 42%;
+    height: 240px;
+    background: radial-gradient(circle, var(--mvc-accent-soft), transparent 72%);
+    filter: blur(14px);
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+.mvc-panel > * {
+    position: relative;
+    z-index: 1;
+}
+
+.mvc-panel--health-starting,
+.mvc-panel--health-ready {
+    --mvc-accent: #9ed8ff;
+    --mvc-accent-soft: rgba(158, 216, 255, 0.24);
+    --mvc-accent-glow: rgba(90, 180, 255, 0.42);
+}
+
+.mvc-panel--health-listening.mvc-panel--stage-wake {
+    --mvc-accent: var(--success);
+    --mvc-accent-soft: rgba(125, 240, 177, 0.24);
+    --mvc-accent-glow: rgba(125, 240, 177, 0.44);
+}
+
+.mvc-panel--health-listening.mvc-panel--stage-command {
+    --mvc-accent: var(--focus);
+    --mvc-accent-soft: rgba(255, 217, 102, 0.26);
+    --mvc-accent-glow: rgba(255, 217, 102, 0.48);
+}
+
+.mvc-panel--health-restarting {
+    --mvc-accent: #ffb86c;
+    --mvc-accent-soft: rgba(255, 184, 108, 0.24);
+    --mvc-accent-glow: rgba(255, 184, 108, 0.42);
+}
+
+.mvc-panel--health-error {
+    --mvc-accent: var(--danger);
+    --mvc-accent-soft: rgba(255, 107, 107, 0.24);
+    --mvc-accent-glow: rgba(255, 107, 107, 0.44);
+}
+
+.mvc-panel--feedback-success {
+    box-shadow:
+        0 18px 50px var(--glass-shadow),
+        0 0 0 1px rgba(125, 240, 177, 0.24),
+        0 0 40px rgba(125, 240, 177, 0.16);
+}
+
+.mvc-panel--feedback-warning {
+    box-shadow:
+        0 18px 50px var(--glass-shadow),
+        0 0 0 1px rgba(255, 217, 102, 0.28),
+        0 0 40px rgba(255, 217, 102, 0.16);
+}
+
+.mvc-hero {
+    gap: 1rem;
+}
+
+.mvc-status-line,
+.mvc-section-heading {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.mvc-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.95rem;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.mvc-status-pill-copy {
+    color: var(--text-main);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
 }
 
 .mvc-dot {
-    width: 10px;
-    height: 10px;
-    flex: 0 0 10px;
+    position: relative;
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
     border-radius: 50%;
-    background: #8e9db2;
-    box-shadow: 0 0 0 4px rgba(142, 157, 178, 0.16);
+    background: var(--mvc-accent);
+    box-shadow: 0 0 0 8px var(--mvc-accent-soft), 0 0 24px var(--mvc-accent-glow);
+}
+
+.mvc-panel--stage-command .mvc-dot {
+    animation: mvc-pulse 1.15s ease-out infinite;
+}
+
+.mvc-badge {
+    padding: 0.7rem 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.42);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    color: var(--text-main);
+    font-size: 0.76rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.mvc-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(180px, 0.95fr);
+    gap: 1rem;
+    align-items: stretch;
+}
+
+.mvc-hero-copy {
+    align-content: start;
+    gap: 0.7rem;
+}
+
+.mvc-eyebrow {
+    color: var(--mvc-accent);
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
 }
 
 .mvc-title {
-    font-size: 17px;
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: 0.2px;
+    color: var(--text-main);
+    font-size: clamp(1.65rem, 4vw, 2.35rem);
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
 }
 
 .mvc-detail {
-    margin-top: 6px;
-    padding-left: 20px;
-    font-size: 13px;
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+}
+
+.mvc-orbit {
+    display: grid;
+    min-height: 100%;
+    padding: 0.95rem;
+}
+
+.mvc-orbit-ring {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 0.45rem;
+    min-height: 210px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: calc(var(--radius) + 6px);
+    background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.05) 54%, transparent 72%),
+        rgba(4, 10, 20, 0.2);
+    text-align: center;
+}
+
+.mvc-orbit-ring::before {
+    content: "";
+    position: absolute;
+    inset: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 14px rgba(255, 255, 255, 0.03), 0 0 36px var(--mvc-accent-soft);
+}
+
+.mvc-orbit-ring::after {
+    content: "";
+    position: absolute;
+    inset: 32px;
+    border: 1px dashed rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: mvc-spin 14s linear infinite;
+}
+
+.mvc-orbit-label,
+.mvc-orbit-value,
+.mvc-wave,
+.mvc-orbit-detail {
+    position: relative;
+    z-index: 1;
+}
+
+.mvc-orbit-label,
+.mvc-section-label,
+.mvc-metric-label {
+    color: var(--text-muted);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.mvc-orbit-value {
+    max-width: 9ch;
+    color: var(--text-main);
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+}
+
+.mvc-orbit-detail,
+.mvc-section-note,
+.mvc-transcript-note {
+    color: var(--text-muted);
+    font-size: 0.86rem;
+}
+
+.mvc-wave {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 28px;
+    margin: 0.2rem 0 0.1rem;
+}
+
+.mvc-wave-bar {
+    width: 8px;
+    height: 10px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), var(--mvc-accent));
+    box-shadow: 0 0 14px var(--mvc-accent-soft);
+    transform-origin: center bottom;
+    animation: mvc-wave-idle 1.8s ease-in-out infinite;
+}
+
+.mvc-wave-bar:nth-child(2) {
+    animation-delay: 0.12s;
+}
+
+.mvc-wave-bar:nth-child(3) {
+    animation-delay: 0.24s;
+}
+
+.mvc-wave-bar:nth-child(4) {
+    animation-delay: 0.36s;
+}
+
+.mvc-wave-bar:nth-child(5) {
+    animation-delay: 0.48s;
+}
+
+.mvc-panel--stage-wake .mvc-wave-bar {
+    animation-name: mvc-wave-wake;
+    animation-duration: 1.2s;
+}
+
+.mvc-panel--stage-command .mvc-wave-bar {
+    animation-name: mvc-wave-live;
+    animation-duration: 0.85s;
+}
+
+.mvc-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+}
+
+.mvc-metric {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    min-height: 92px;
+}
+
+.mvc-metric-value {
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 700;
     line-height: 1.35;
-    color: rgba(235, 241, 248, 0.82);
+    text-wrap: balance;
     word-break: break-word;
 }
 
-.mvc-card--idle {
-    opacity: 0.72;
+.mvc-listen-band,
+.mvc-transcript,
+.mvc-command-panel,
+.mvc-diagnostic {
+    display: grid;
+    gap: 0.8rem;
 }
 
-.mvc-card--listening_wake,
-.mvc-card--listening_cmd {
-    border-color: rgba(255, 120, 190, 0.46);
-    background:
-            linear-gradient(180deg, rgba(74, 24, 53, 0.96), rgba(37, 10, 27, 0.92));
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.36), 0 0 0 1px rgba(255, 120, 190, 0.1);
-    opacity: 1;
+.mvc-progress {
+    position: relative;
+    height: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.24);
 }
 
-.mvc-card--heard {
-    border-color: rgba(109, 220, 162, 0.42);
-    background:
-            linear-gradient(180deg, rgba(21, 55, 44, 0.96), rgba(11, 27, 22, 0.92));
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.36), 0 0 0 1px rgba(109, 220, 162, 0.08);
-    opacity: 1;
+.mvc-progress::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.18), transparent 45%);
+    pointer-events: none;
 }
 
-.mvc-card--listening_wake .mvc-dot,
-.mvc-card--listening_cmd .mvc-dot {
-    background: #ff78be;
-    box-shadow: 0 0 0 4px rgba(255, 120, 190, 0.22);
+.mvc-progress-bar {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.94), var(--mvc-accent));
+    transform-origin: left center;
+    animation: mvc-command-window var(--mvc-command-window-ms, 4000ms) linear forwards;
 }
 
-.mvc-card--heard .mvc-dot {
-    background: #6ddca2;
-    box-shadow: 0 0 0 4px rgba(109, 220, 162, 0.2);
+.mvc-transcript-text {
+    max-width: none;
+    color: var(--text-main);
+    font-size: 1.06rem;
+    font-weight: 700;
+    line-height: 1.45;
+    word-break: break-word;
 }
 
-.mvc-card--error,
-.mvc-card--unavailable {
-    border-color: rgba(255, 120, 120, 0.4);
-    background:
-            linear-gradient(180deg, rgba(70, 25, 25, 0.96), rgba(35, 12, 12, 0.92));
-    opacity: 1;
+.mvc-transcript-note--success {
+    color: var(--success);
 }
 
-.mvc-card--error .mvc-dot,
-.mvc-card--unavailable .mvc-dot {
-    background: #ff7878;
-    box-shadow: 0 0 0 4px rgba(255, 120, 120, 0.18);
+.mvc-transcript-note--warning {
+    color: var(--focus);
+}
+
+.mvc-hints {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.mvc-hint {
+    padding: 0.72rem 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    color: var(--text-main);
+    font-size: 0.88rem;
+    font-weight: 700;
+    line-height: 1.2;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.mvc-diagnostic-copy {
+    max-width: none;
+    color: rgba(248, 251, 255, 0.86);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+@keyframes mvc-command-window {
+    from {
+        transform: scaleX(1);
+    }
+
+    to {
+        transform: scaleX(0);
+    }
+}
+
+@keyframes mvc-pulse {
+    0% {
+        box-shadow: 0 0 0 0 var(--mvc-accent-soft), 0 0 24px var(--mvc-accent-glow);
+    }
+
+    70% {
+        box-shadow: 0 0 0 12px rgba(255, 255, 255, 0), 0 0 34px var(--mvc-accent-glow);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0), 0 0 24px var(--mvc-accent-glow);
+    }
+}
+
+@keyframes mvc-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes mvc-wave-idle {
+    0%,
+    100% {
+        transform: scaleY(0.85);
+    }
+
+    50% {
+        transform: scaleY(1.35);
+    }
+}
+
+@keyframes mvc-wave-wake {
+    0%,
+    100% {
+        transform: scaleY(0.75);
+    }
+
+    40% {
+        transform: scaleY(1.55);
+    }
+
+    70% {
+        transform: scaleY(1.1);
+    }
+}
+
+@keyframes mvc-wave-live {
+    0%,
+    100% {
+        transform: scaleY(0.7);
+    }
+
+    30% {
+        transform: scaleY(1.75);
+    }
+
+    60% {
+        transform: scaleY(1.15);
+    }
+}
+
+@media (max-width: 720px) {
+    .mvc-root {
+        width: min(100%, calc(100vw - 24px));
+    }
+
+    .mvc-root--overlay {
+        top: 12px;
+        right: 12px;
+        width: calc(100vw - 24px);
+    }
+
+    .mvc-panel {
+        padding: 1rem;
+    }
+
+    .mvc-hero-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mvc-orbit-ring {
+        min-height: 180px;
+    }
+
+    .mvc-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mvc-metric--action {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 520px) {
+    .mvc-status-line,
+    .mvc-section-heading {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .mvc-badge {
+        align-self: flex-start;
+    }
+
+    .mvc-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .mvc-title {
+        font-size: clamp(1.45rem, 7vw, 1.95rem);
+    }
+
+    .mvc-transcript-text {
+        font-size: 1rem;
+    }
+}
+
+@media (prefers-contrast: more) {
+    .mvc-root {
+        --glass-bg: rgba(0, 0, 0, 0.72);
+        --glass-bg-strong: rgba(0, 0, 0, 0.86);
+        --glass-border: rgba(255, 255, 255, 0.9);
+        --text-muted: #ffffff;
+    }
+
+    .mvc-root :where(.glass),
+    .mvc-root :where(.glass-readable) {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    .mvc-status-pill,
+    .mvc-badge,
+    .mvc-metric,
+    .mvc-listen-band,
+    .mvc-transcript,
+    .mvc-command-panel,
+    .mvc-diagnostic {
+        background: #000;
+        border-color: #fff;
+    }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+    .mvc-root :where(.glass),
+    .mvc-root :where(.glass-readable) {
+        background: rgba(5, 12, 24, 0.92);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mvc-root *,
+    .mvc-root *::before,
+    .mvc-root *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
 }
