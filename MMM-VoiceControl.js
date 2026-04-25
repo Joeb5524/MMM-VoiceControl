@@ -281,131 +281,26 @@ Module.register("MMM-VoiceControl", {
 
     _getStatusBadge() {
         if (this.health === "error") {
-            return "Offline";
+            return "error";
         }
 
         if (this.health === "restarting") {
-            return "Recovering";
+            return "restarting";
         }
 
         if (this.health === "starting") {
-            return "Starting";
+            return "starting";
         }
 
         if (this.stage === "command") {
-            return "Command";
+            return "listening";
         }
 
         if (this.stage === "wake") {
-            return "Wake";
+            return "wake";
         }
 
-        return "Ready";
-    },
-
-    _getActiveCommandCount() {
-        const api = this._getCommandApi();
-        return api ? api.getActiveCommands(this.config).length : null;
-    },
-
-    _getCommandCountCopy(count) {
-        if (count === null) {
-            return "Loading commands";
-        }
-
-        if (!count) {
-            return "No commands armed";
-        }
-
-        return count === 1 ? "1 command armed" : `${count} commands armed`;
-    },
-
-    _getLastCommandPhrase() {
-        if (!this.lastCommandId) {
-            return "";
-        }
-
-        const command = this._findCommandById(this.lastCommandId);
-        return command ? command.phrase : "";
-    },
-
-    _getOrbitCopy(activeCommandCount) {
-        if (this.health === "error") {
-            return {
-                label: "Voice state",
-                value: "Offline",
-                detail: "Worker attention needed"
-            };
-        }
-
-        if (this.health === "restarting") {
-            return {
-                label: "Voice state",
-                value: "Retrying",
-                detail: "Rebuilding microphone link"
-            };
-        }
-
-        if (this.health === "starting") {
-            return {
-                label: "Voice state",
-                value: "Booting",
-                detail: "Checking local services"
-            };
-        }
-
-        if (this.stage === "command") {
-            return {
-                label: "Listening live",
-                value: "Speak now",
-                detail: `${this._formatDuration(this.commandWindowMs)} response window`
-            };
-        }
-
-        return {
-            label: "Wake word",
-            value: this.config.wakeWord,
-            detail: this._getCommandCountCopy(activeCommandCount)
-        };
-    },
-
-    _formatDuration(milliseconds) {
-        const duration = Number.isFinite(milliseconds) ? milliseconds : this.config.commandWindowMs;
-        return `${(duration / 1000).toFixed(1)}s`;
-    },
-
-    _createMetricCard(label, value, modifier) {
-        const card = document.createElement("div");
-        card.className = [
-            "mvc-metric",
-            "glass",
-            modifier ? `mvc-metric--${modifier}` : ""
-        ].filter(Boolean).join(" ");
-
-        const metricLabel = document.createElement("span");
-        metricLabel.className = "mvc-metric-label";
-        metricLabel.textContent = label;
-
-        const metricValue = document.createElement("span");
-        metricValue.className = "mvc-metric-value";
-        metricValue.textContent = value;
-
-        card.appendChild(metricLabel);
-        card.appendChild(metricValue);
-        return card;
-    },
-
-    _createWaveBars() {
-        const wave = document.createElement("div");
-        wave.className = "mvc-wave";
-
-        for (let index = 0; index < 5; index += 1) {
-            const bar = document.createElement("span");
-            bar.className = "mvc-wave-bar";
-            wave.appendChild(bar);
-        }
-
-        return wave;
+        return "ready";
     },
 
     _clone(value) {
@@ -414,234 +309,108 @@ Module.register("MMM-VoiceControl", {
 
     getDom() {
         const copy = this._getStatusCopy();
-        const hints = this._getHintPhrases();
-        const activeCommandCount = this._getActiveCommandCount();
-        const commandCountCopy = this._getCommandCountCopy(activeCommandCount);
-        const lastCommandPhrase = this._getLastCommandPhrase();
-        const orbitCopy = this._getOrbitCopy(activeCommandCount);
-        const transcriptText = this.lastHeard || "No command heard yet.";
-        let transcriptNote = `Say "${this.config.wakeWord}" then one of the suggested commands.`;
-        let transcriptNoteClass = "";
-
-        if (lastCommandPhrase) {
-            transcriptNote = `Matched command: ${lastCommandPhrase}`;
-            transcriptNoteClass = "mvc-transcript-note--success";
-        } else if (this.lastHeard) {
-            transcriptNote = "No matching command found.";
-            transcriptNoteClass = "mvc-transcript-note--warning";
-        }
-
         const root = document.createElement("div");
         root.className = `mvc-root mvc-root--${this._getDisplayMode()}`;
 
-        const panel = document.createElement("section");
-        panel.className = [
-            "mvc-panel",
-            "glass",
-            "glass-readable",
-            "glass-stack",
-            `mvc-panel--health-${this.health}`,
-            `mvc-panel--stage-${this.stage}`,
-            this.feedback ? `mvc-panel--feedback-${this.feedback}` : ""
+        const card = document.createElement("section");
+        card.className = [
+            "mvc-card",
+            `mvc-card--health-${this.health}`,
+            `mvc-card--stage-${this.stage}`,
+            this.feedback ? `mvc-card--feedback-${this.feedback}` : ""
         ].filter(Boolean).join(" ");
-        panel.style.setProperty("--mvc-command-window-ms", `${this.commandWindowMs}ms`);
+        card.style.setProperty("--mvc-command-window-ms", `${this.commandWindowMs}ms`);
 
-        const hero = document.createElement("header");
-        hero.className = "mvc-hero glass-stack";
+        const header = document.createElement("div");
+        header.className = "mvc-header";
 
-        const statusLine = document.createElement("div");
-        statusLine.className = "mvc-status-line";
+        const status = document.createElement("div");
+        status.className = "mvc-status";
 
         const dot = document.createElement("span");
         dot.className = "mvc-dot";
 
-        const statusPill = document.createElement("div");
-        statusPill.className = "mvc-status-pill";
+        const statusCopy = document.createElement("div");
+        statusCopy.className = "mvc-status-copy";
 
-        const statusPillCopy = document.createElement("span");
-        statusPillCopy.className = "mvc-status-pill-copy";
-        statusPillCopy.textContent = copy.eyebrow;
+        const eyebrow = document.createElement("div");
+        eyebrow.className = "mvc-eyebrow";
+        eyebrow.textContent = copy.eyebrow;
 
-        statusPill.appendChild(dot);
-        statusPill.appendChild(statusPillCopy);
+        const title = document.createElement("div");
+        title.className = "mvc-title";
+        title.textContent = copy.title;
+
+        statusCopy.appendChild(eyebrow);
+        statusCopy.appendChild(title);
+        status.appendChild(dot);
+        status.appendChild(statusCopy);
 
         const badge = document.createElement("div");
         badge.className = "mvc-badge";
         badge.textContent = this._getStatusBadge();
 
-        statusLine.appendChild(statusPill);
-        statusLine.appendChild(badge);
-        hero.appendChild(statusLine);
+        header.appendChild(status);
+        header.appendChild(badge);
 
-        const heroGrid = document.createElement("div");
-        heroGrid.className = "mvc-hero-grid";
-
-        const heroCopy = document.createElement("div");
-        heroCopy.className = "mvc-hero-copy glass-stack";
-
-        const eyebrow = document.createElement("span");
-        eyebrow.className = "mvc-eyebrow";
-        eyebrow.textContent = copy.eyebrow;
-
-        const title = document.createElement("h2");
-        title.className = "mvc-title";
-        title.textContent = copy.title;
-
-        const detail = document.createElement("p");
+        const detail = document.createElement("div");
         detail.className = "mvc-detail";
         detail.textContent = copy.detail;
 
-        heroCopy.appendChild(eyebrow);
-        heroCopy.appendChild(title);
-        heroCopy.appendChild(detail);
+        const transcript = document.createElement("div");
+        transcript.className = "mvc-transcript";
+        transcript.textContent = this.lastHeard || "No command heard yet.";
 
-        const orbit = document.createElement("div");
-        orbit.className = "mvc-orbit glass";
+        const transcriptLabel = document.createElement("span");
+        transcriptLabel.className = "mvc-transcript-label";
+        transcriptLabel.textContent = "Last heard";
+        transcript.prepend(transcriptLabel);
 
-        const orbitRing = document.createElement("div");
-        orbitRing.className = "mvc-orbit-ring";
-
-        const orbitLabel = document.createElement("span");
-        orbitLabel.className = "mvc-orbit-label";
-        orbitLabel.textContent = orbitCopy.label;
-
-        const orbitValue = document.createElement("span");
-        orbitValue.className = "mvc-orbit-value";
-        orbitValue.textContent = orbitCopy.value;
-
-        const orbitDetail = document.createElement("span");
-        orbitDetail.className = "mvc-orbit-detail";
-        orbitDetail.textContent = orbitCopy.detail;
-
-        orbitRing.appendChild(orbitLabel);
-        orbitRing.appendChild(orbitValue);
-        orbitRing.appendChild(this._createWaveBars());
-        orbitRing.appendChild(orbitDetail);
-        orbit.appendChild(orbitRing);
-
-        heroGrid.appendChild(heroCopy);
-        heroGrid.appendChild(orbit);
-        hero.appendChild(heroGrid);
-        panel.appendChild(hero);
-
-        const metrics = document.createElement("div");
-        metrics.className = "mvc-metrics";
-        metrics.appendChild(this._createMetricCard("Response window", this._formatDuration(this.commandWindowMs), "window"));
-        metrics.appendChild(this._createMetricCard("Commands", commandCountCopy, "commands"));
-        metrics.appendChild(this._createMetricCard("Last action", lastCommandPhrase || "Awaiting first command", "action"));
-        panel.appendChild(metrics);
+        card.appendChild(header);
+        card.appendChild(detail);
+        card.appendChild(transcript);
 
         if (this.stage === "command" && this.health === "listening") {
-            const liveWindow = document.createElement("section");
-            liveWindow.className = "mvc-listen-band glass";
-
-            const liveHeading = document.createElement("div");
-            liveHeading.className = "mvc-section-heading";
-
-            const liveLabel = document.createElement("span");
-            liveLabel.className = "mvc-section-label";
-            liveLabel.textContent = "Live command window";
-
-            const liveNote = document.createElement("span");
-            liveNote.className = "mvc-section-note";
-            liveNote.textContent = `${this._formatDuration(this.commandWindowMs)} to speak a command`;
-
-            liveHeading.appendChild(liveLabel);
-            liveHeading.appendChild(liveNote);
-
             const progress = document.createElement("div");
             progress.className = "mvc-progress";
 
             const progressBar = document.createElement("div");
             progressBar.className = "mvc-progress-bar";
 
+            const progressLabel = document.createElement("div");
+            progressLabel.className = "mvc-progress-label";
+            progressLabel.textContent = `${(this.commandWindowMs / 1000).toFixed(1)}s response window`;
+
             progress.appendChild(progressBar);
-            liveWindow.appendChild(liveHeading);
-            liveWindow.appendChild(progress);
-            panel.appendChild(liveWindow);
+            card.appendChild(progress);
+            card.appendChild(progressLabel);
         }
 
-        const transcript = document.createElement("section");
-        transcript.className = "mvc-transcript glass glass-readable";
-        transcript.setAttribute("aria-live", "polite");
+        if ((this.health === "ready" || this.stage === "wake") && !this.error) {
+            const hints = this._getHintPhrases();
+            if (hints.length) {
+                const hintRow = document.createElement("div");
+                hintRow.className = "mvc-hints";
 
-        const transcriptHeading = document.createElement("div");
-        transcriptHeading.className = "mvc-section-heading";
+                hints.forEach((hint) => {
+                    const chip = document.createElement("span");
+                    chip.className = "mvc-hint";
+                    chip.textContent = hint;
+                    hintRow.appendChild(chip);
+                });
 
-        const transcriptLabel = document.createElement("span");
-        transcriptLabel.className = "mvc-section-label";
-        transcriptLabel.textContent = "Last heard";
-
-        const transcriptState = document.createElement("span");
-        transcriptState.className = "mvc-section-note";
-        transcriptState.textContent = this._getStatusBadge();
-
-        transcriptHeading.appendChild(transcriptLabel);
-        transcriptHeading.appendChild(transcriptState);
-
-        const transcriptBody = document.createElement("p");
-        transcriptBody.className = "mvc-transcript-text";
-        transcriptBody.textContent = transcriptText;
-
-        const transcriptMeta = document.createElement("div");
-        transcriptMeta.className = ["mvc-transcript-note", transcriptNoteClass].filter(Boolean).join(" ");
-        transcriptMeta.textContent = transcriptNote;
-
-        transcript.appendChild(transcriptHeading);
-        transcript.appendChild(transcriptBody);
-        transcript.appendChild(transcriptMeta);
-        panel.appendChild(transcript);
-
-        if (hints.length && this.health !== "error") {
-            const hintPanel = document.createElement("section");
-            hintPanel.className = "mvc-command-panel glass";
-
-            const hintHeading = document.createElement("div");
-            hintHeading.className = "mvc-section-heading";
-
-            const hintLabel = document.createElement("span");
-            hintLabel.className = "mvc-section-label";
-            hintLabel.textContent = "Suggested commands";
-
-            const hintNote = document.createElement("span");
-            hintNote.className = "mvc-section-note";
-            hintNote.textContent = commandCountCopy;
-
-            const hintRow = document.createElement("div");
-            hintRow.className = "mvc-hints";
-
-            hints.forEach((hint) => {
-                const chip = document.createElement("span");
-                chip.className = "mvc-hint";
-                chip.textContent = hint;
-                hintRow.appendChild(chip);
-            });
-
-            hintHeading.appendChild(hintLabel);
-            hintHeading.appendChild(hintNote);
-            hintPanel.appendChild(hintHeading);
-            hintPanel.appendChild(hintRow);
-            panel.appendChild(hintPanel);
+                card.appendChild(hintRow);
+            }
         }
 
-        if (this.error && (this.error.detail || this.error.message)) {
-            const diagnostic = document.createElement("section");
-            diagnostic.className = "mvc-diagnostic glass";
-
-            const diagnosticLabel = document.createElement("span");
-            diagnosticLabel.className = "mvc-section-label";
-            diagnosticLabel.textContent = "Diagnostic";
-
-            const diagnosticCopy = document.createElement("p");
-            diagnosticCopy.className = "mvc-diagnostic-copy";
-            diagnosticCopy.textContent = this.error.detail || this.error.message;
-
-            diagnostic.appendChild(diagnosticLabel);
-            diagnostic.appendChild(diagnosticCopy);
-            panel.appendChild(diagnostic);
+        if (this.error && this.error.detail) {
+            const meta = document.createElement("div");
+            meta.className = "mvc-meta";
+            meta.textContent = this.error.detail;
+            card.appendChild(meta);
         }
 
-        root.appendChild(panel);
+        root.appendChild(card);
         return root;
     }
 });
