@@ -3,8 +3,8 @@
     --mvc-surface-bottom: rgba(5, 13, 20, 0.94);
     --mvc-border: rgba(132, 182, 210, 0.28);
     --mvc-glow: rgba(45, 173, 214, 0.2);
-    --mvc-accent: #69d5ff;
-    --mvc-accent-soft: rgba(105, 213, 255, 0.18);
+    --mvc-accent: #ca00ff;
+    --mvc-accent-soft: rgb(156 36 172 / 0.18);
     --mvc-text: #f2fbff;
     --mvc-muted: rgba(220, 238, 246, 0.76);
     --mvc-shadow: 0 20px 48px rgba(0, 0, 0, 0.36);
